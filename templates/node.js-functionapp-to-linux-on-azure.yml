@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-- master
+- {{ branch }}
 
 variables:
 
@@ -14,18 +14,21 @@ variables:
   # Function app name
   functionAppName: '{{ functionAppName }}'
 
+  # Environment name
+  environmentName: '{{ functionAppName }}'
+
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
 stages:
 - stage: Build
   displayName: Build stage
-  jobs:  
+  jobs:
   - job: Build
     displayName: Build
     pool:
       vmImage: $(vmImageName)
-      
+
     steps:
     - task: NodeTool@0
       inputs:
@@ -44,7 +47,7 @@ stages:
         npm run build --if-present
         npm run test --if-present
       displayName: 'Prepare binaries'
-      
+
     - task: ArchiveFiles@2
       displayName: 'Archive files'
       inputs:
@@ -64,13 +67,13 @@ stages:
   jobs:
   - deployment: Deploy
     displayName: Deploy
-    environment: 'development'
-    pool: 
+    environment: $(environmentName)
+    pool:
       vmImage: $(vmImageName)
     strategy:
       runOnce:
         deploy:
-          steps:            
+          steps:
           - task: AzureFunctionApp@1
             displayName: 'Azure Functions App Deploy: {{ functionAppName }}'
             inputs:

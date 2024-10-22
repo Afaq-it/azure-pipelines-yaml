@@ -3,14 +3,14 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
-- master
+- {{ branch }}
 
 resources:
 - repo: self
 
 variables:
   # ========================================================================
-  #                          Mandatory variables 
+  #                          Mandatory variables
   # ========================================================================
 
  # Update Azure.ResourceGroupName value with Azure resource group name.
@@ -26,7 +26,7 @@ variables:
   ACR.Name: '{{#toAlphaNumericString repositoryName 46}}{{/toAlphaNumericString}}{{#shortGuid}}{{/shortGuid}}'
 
   # ========================================================================
-  #                           Optional variables 
+  #                           Optional variables
   # ========================================================================
 
   ACR.ImageName: '$(ACR.Name):$(Build.BuildId)'
@@ -41,7 +41,7 @@ jobs:
   condition: and(succeeded(), eq(variables['Azure.CreateResources'], 'true'))
 
   pool:
-    vmImage: 'ubuntu-latest'
+    {{ pool }}
 
   steps:
   - task: AzureResourceGroupDeployment@2
@@ -60,7 +60,7 @@ jobs:
   condition: or(succeeded(), ne(variables['Azure.CreateResources'], 'true'))
 
   pool:
-    vmImage: 'ubuntu-latest'
+    {{ pool }}
 
   steps:
   - task: Docker@1

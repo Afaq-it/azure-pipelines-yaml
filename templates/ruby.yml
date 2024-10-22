@@ -4,10 +4,10 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/ruby
 
 trigger:
-- master
+- {{ branch }}
 
 pool:
-  vmImage: 'ubuntu-latest'
+  {{ pool }}
 
 steps:
 - task: UseRubyVersion@0

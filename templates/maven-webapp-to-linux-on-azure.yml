@@ -4,15 +4,18 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 
 trigger:
-- master
+- {{ branch }}
 
 variables:
 
   # Azure Resource Manager connection created during pipeline creation
   azureSubscription: '{{ azureRmConnection.Id }}'
-  
+
   # Web app name
   webAppName: '{{ webAppName }}'
+
+  # Environment name
+  environmentName: '{{ webAppName }}'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -25,7 +28,7 @@ stages:
     displayName: Maven Package and Publish Artifacts
     pool:
       vmImage: $(vmImageName)
-    
+
     steps:
     - task: Maven@3
       displayName: 'Maven Package'
@@ -49,8 +52,8 @@ stages:
   jobs:
   - deployment: DeployLinuxWebApp
     displayName: Deploy Linux Web App
-    environment: 'development'
-    pool: 
+    environment: $(environmentName)
+    pool:
       vmImage: $(vmImageName)
     strategy:
       runOnce:

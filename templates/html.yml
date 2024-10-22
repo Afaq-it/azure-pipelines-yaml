@@ -4,10 +4,10 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+- {{ branch }}
 
 pool:
-  vmImage: 'ubuntu-latest'
+  {{ pool }}
 
 steps:
 - task: ArchiveFiles@2
